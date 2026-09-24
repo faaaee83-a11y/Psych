@@ -12,10 +12,21 @@
 	<script type="text/javascript" src="./PsychEngine.js"></script>
 
 	<script>
+		// タッチ操作によるスクロール・ズームを無効化
 		window.addEventListener ("touchmove", function (event) { event.preventDefault (); }, { capture: false, passive: false });
-		// ピンチズーム・右クリックメニュー・スクロール操作を無効化
+
+		// 矢印キー・スペース・PageUp/Down・Home/End によるスクロールを無効化
+		window.addEventListener ("keydown", function (event) {
+			var blocked = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " ", "PageUp", "PageDown", "Home", "End"];
+			if (blocked.indexOf (event.key) !== -1) {
+				event.preventDefault ();
+			}
+		}, { capture: true, passive: false });
+
+		// 右クリックメニューとホイールスクロールを無効化
 		window.addEventListener ("contextmenu", function (event) { event.preventDefault (); });
 		window.addEventListener ("wheel", function (event) { event.preventDefault (); }, { passive: false });
+
 		if (typeof window.devicePixelRatio != 'undefined' && window.devicePixelRatio > 2) {
 			var meta = document.getElementById ("viewport");
 			meta.setAttribute ('content', 'width=device-width, initial-scale=' + (2 / window.devicePixelRatio) + ', user-scalable=no');
