@@ -16,12 +16,22 @@
 		window.addEventListener ("touchmove", function (event) { event.preventDefault (); }, { capture: false, passive: false });
 
 		// 矢印キー・スペース・PageUp/Down・Home/End によるスクロールを無効化
-		window.addEventListener ("keydown", function (event) {
-			var blocked = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " ", "PageUp", "PageDown", "Home", "End"];
-			if (blocked.indexOf (event.key) !== -1) {
+		// (keyCode: 32=Space 33=PageUp 34=PageDown 35=End 36=Home 37-40=矢印)
+		var blockedKeyCodes = [32, 33, 34, 35, 36, 37, 38, 39, 40];
+		function blockScrollKeys (event) {
+			if (blockedKeyCodes.indexOf (event.keyCode) !== -1) {
 				event.preventDefault ();
 			}
-		}, { capture: true, passive: false });
+		}
+		window.addEventListener ("keydown", blockScrollKeys, { capture: true, passive: false });
+		document.addEventListener ("keydown", blockScrollKeys, { capture: true, passive: false });
+
+		// 万が一スクロールされても、すぐ元の位置に戻す
+		window.addEventListener ("scroll", function () { window.scrollTo (0, 0); });
+
+		// 読み込み後・クリック時にこのページへフォーカスを移す
+		window.addEventListener ("load", function () { window.focus (); });
+		window.addEventListener ("mousedown", function () { window.focus (); });
 
 		// 右クリックメニューとホイールスクロールを無効化
 		window.addEventListener ("contextmenu", function (event) { event.preventDefault (); });
@@ -40,6 +50,7 @@
 			width: 100%;
 			height: 100%;
 			overflow: hidden;
+			overscroll-behavior: none;
 			background: #000000;
 			position: fixed;          /* ページ自体を固定 */
 			touch-action: none;
